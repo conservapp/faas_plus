@@ -1,0 +1,8 @@
+---
+- name: Terminate node
+  ec2:
+    state: 'absent'
+    region: "{{ ec2.region }}"
+    instance_ids: "{{ hostvars[item].ec2_id }}"
+  with_items:  
+   - "{{ groups[instance.group]|default([]) }}"

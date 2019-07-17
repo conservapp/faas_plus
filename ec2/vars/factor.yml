@@ -1,0 +1,50 @@
+# Parameters for supervisor, a process manager that can be used to run the factorization.
+supervisor:
+    remote_conf: supervisord.conf
+    port: 9001
+    # username and password to access the supervisor http server at <server-ip>:<supervisord_port>
+    username: '{{ custom.username }}'
+    password: '{{ custom.password }}'
+    # supervisor will send crash reports to this address (check your junk mail)
+    email: '{{ custom.email }}'
+
+commands:
+    post_sieve: '{{ faasdir_remote }}/factor/post_sieve.sh'
+    post_linalg: '{{ faasdir_remote }}/factor/post_linalg.sh'
+    post_factor: '{{ faasdir_remote }}/factor/post_factor.sh'
+
+cado:
+    name: faas155
+    N: '{{ custom.N }}'
+    alim: 15246811
+    rlim: 31940624
+    lpbr: 28
+    lpba: 28
+    tasks:
+        mpi: "8x8"
+        polyselect: 
+            threads: 2
+            degree: 5
+            P: 500000
+            admax: 2e7
+            incr: 60
+            nq: 1000
+        sieve:
+            threads: 2
+            mfbr: 62
+            mfba: 61
+            rlambda: 2.24
+            alambda: 2.20
+            ncurves0: 23
+            ncurves1: 15
+            qrange: 2500
+        I: 14
+        msieve:
+            target_density: 70
+        filter:
+            purge: 
+                keep: 160
+            maxlevel: 25
+            ratio: 1.1
+            merge:
+                forbw: 3
